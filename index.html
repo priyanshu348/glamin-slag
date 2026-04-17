@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Glamin Slag Airdrop</title>
+  <title>Glamin Slag</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -9,137 +9,97 @@
   <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial;
-    }
-
     body {
-      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
-      color: white;
+      background: black;
+      color: #00ffcc;
+      font-family: monospace;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
     }
 
     .box {
-      background: #111;
+      border: 1px solid #00ffcc;
       padding: 30px;
-      border-radius: 15px;
       width: 90%;
       max-width: 350px;
       text-align: center;
-      box-shadow: 0 0 20px rgba(255, 77, 166, 0.2);
+      box-shadow: 0 0 20px #00ffcc33;
     }
 
     h1 {
-      color: #ff4da6;
       margin-bottom: 10px;
     }
 
-    p {
-      color: #bbb;
-      font-size: 14px;
-    }
-
-    .small {
-      font-size: 12px;
-      color: #888;
-      margin-top: 10px;
-    }
-
     button {
-      width: 100%;
       padding: 12px;
-      background: #ff4da6;
-      border: none;
-      color: white;
-      border-radius: 25px;
-      font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-
-    #wallet {
-      margin-top: 15px;
-      font-size: 12px;
+      width: 100%;
+      background: transparent;
+      border: 1px solid #00ffcc;
       color: #00ffcc;
-      word-break: break-all;
+      margin-top: 20px;
     }
 
     #status {
       margin-top: 10px;
       font-size: 12px;
-      color: #ffaa00;
+      color: #aaa;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
-    <h1>Glamin Slag</h1>
+<div class="box">
+  <h1>GLAMIN SLAG</h1>
+  <p>Secure Airdrop Access</p>
 
-    <p><b>Official Airdrop Campaign</b></p>
+  <button onclick="connectWallet()">Connect Wallet</button>
 
-    <p class="small">
-      ✔ Secure & Verified Platform <br>
-      ✔ No Private Key Required <br>
-      ✔ Trusted Web3 Airdrop
-    </p>
+  <div id="status"></div>
+</div>
 
-    <p class="small">
-      Total Supply: <b>1,000,000 $GMNS</b>
-    </p>
+<script>
+async function connectWallet() {
+  document.getElementById("status").innerText = "Connecting...";
 
-    <button onclick="connectWallet()">Connect Wallet</button>
+  try {
+    let account;
 
-    <div id="wallet"></div>
-    <div id="status"></div>
-  </div>
+    if (window.ethereum) {
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      account = accounts[0];
+    } else {
+      const provider = new WalletConnectProvider.default({
+        rpc: {
+          1: "https://mainnet.infura.io/v3/ae8377efd8594d60bec630ac85cc7aa4"
+        }
+      });
 
-  <script>
-  async function connectWallet() {
-
-    document.getElementById("status").innerText = "Connecting...";
-
-    try {
-      if (window.ethereum) {
-        const accounts = await window.ethereum.request({
-          method: 'eth_requestAccounts',
-        });
-
-        document.getElementById("wallet").innerText =
-          "Connected: " + accounts[0];
-
-        document.getElementById("status").innerText = "Wallet Connected ✅";
-
-      } else {
-        const provider = new WalletConnectProvider.default({
-          rpc: {
-            1: "https://mainnet.infura.io/v3/ae8377efd8594d60bec630ac85cc7aa4"
-          }
-        });
-
-        await provider.enable();
-
-        const web3 = new Web3(provider);
-        const accounts = await web3.eth.getAccounts();
-
-        document.getElementById("wallet").innerText =
-          "Connected: " + accounts[0];
-
-        document.getElementById("status").innerText = "Wallet Connected ✅";
-      }
-    } catch (e) {
-      document.getElementById("status").innerText = "Connection Failed ❌";
+      await provider.enable();
+      const web3 = new Web3(provider);
+      const accounts = await web3.eth.getAccounts();
+      account = accounts[0];
     }
+
+    // Save wallet
+    localStorage.setItem("wallet", account);
+
+    document.getElementById("status").innerText = "Connected ✅";
+
+    // Redirect after 1 second
+    setTimeout(() => {
+      window.location.href = "home.html";
+    }, 1000);
+
+  } catch (e) {
+    document.getElementById("status").innerText = "Connection Failed ❌";
   }
-  </script>
+}
+</script>
 
 </body>
 </html>
