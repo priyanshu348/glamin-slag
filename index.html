@@ -4,7 +4,9 @@
   <title>Glamin Slag Airdrop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+  <!-- WalletConnect + Web3 -->
+  <script src="https://unpkg.com/@walletconnect/web3-provider/dist/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
 
   <style>
     body {
@@ -42,28 +44,38 @@
   <p>Connect your wallet to continue</p>
 
   <button onclick="connectWallet()">Connect Wallet</button>
-
   <div id="wallet"></div>
 
   <script>
-    async function connectWallet() {
-      if (window.ethereum) {
-        try {
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          await provider.send("eth_requestAccounts", []);
-          const signer = provider.getSigner();
-          const address = await signer.getAddress();
+  async function connectWallet() {
 
-          document.getElementById("wallet").innerText =
-            "Connected: " + address;
+    // MetaMask
+    if (window.ethereum) {
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
 
-        } catch (err) {
-          alert("Connection rejected");
-        }
-      } else {
-        alert("Install MetaMask");
-      }
+      document.getElementById("wallet").innerText =
+        "Connected: " + accounts[0];
     }
+
+    // WalletConnect (mobile Chrome)
+    else {
+      const provider = new WalletConnectProvider.default({
+        rpc: {
+          1: "https://mainnet.infura.io/v3/ae8377efd8594d60bec630ac85cc7aa4"
+        }
+      });
+
+      await provider.enable();
+
+      const web3 = new Web3(provider);
+      const accounts = await web3.eth.getAccounts();
+
+      document.getElementById("wallet").innerText =
+        "Connected: " + accounts[0];
+    }
+  }
   </script>
 
 </body>
