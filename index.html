@@ -1,23 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Glamin Slag</title>
-    <style>
-        body {
-            font-family: Arial;
-            text-align: center;
-            background: #111;
-            color: #fff;
-        }
-        h1 {
-            color: #ff4da6;
-        }
-    </style>
+  <title>Glamin Slag Airdrop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+
+  <style>
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+      padding: 50px;
+    }
+
+    h1 {
+      color: #ff4da6;
+    }
+
+    button {
+      padding: 12px 20px;
+      background: #ff4da6;
+      border: none;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #wallet {
+      margin-top: 20px;
+      color: #00ffcc;
+    }
+  </style>
 </head>
+
 <body>
 
-    <h1>Welcome to Glamin Slag 💅</h1>
-    <p>Your style, your vibe.</p>
+  <h1>Glamin Slag Airdrop</h1>
+  <p>Connect your wallet to continue</p>
+
+  <button onclick="connectWallet()">Connect Wallet</button>
+
+  <div id="wallet"></div>
+
+  <script>
+    async function connectWallet() {
+      if (window.ethereum) {
+        try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner();
+          const address = await signer.getAddress();
+
+          document.getElementById("wallet").innerText =
+            "Connected: " + address;
+
+        } catch (err) {
+          alert("Connection rejected");
+        }
+      } else {
+        alert("Install MetaMask");
+      }
+    }
+  </script>
 
 </body>
 </html>
