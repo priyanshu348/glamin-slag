@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Glamin Slag Dashboard</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+
+    body {
+      background: black;
+      color: #00ffcc;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .box {
+      border: 1px solid #00ffcc;
+      padding: 25px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+      box-shadow: 0 0 20px #00ffcc33;
+    }
+
+    h1 {
+      color: #00ffcc;
+      margin-bottom: 10px;
+    }
+
+    .points {
+      font-size: 30px;
+      margin: 15px 0;
+    }
+
+    button {
+      padding: 12px;
+      width: 100%;
+      background: transparent;
+      border: 1px solid #00ffcc;
+      color: #00ffcc;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>GLAMIN SLAG</h1>
+  <p>Daily Reward System</p>
+
+  <div class="points" id="points">Points: 0</div>
+
+  <button id="claimBtn" onclick="claimPoints()">Claim 10 Points</button>
+
+  <div id="status"></div>
+</div>
+
+<script>
+let points = localStorage.getItem("points") || 0;
+let lastClaim = localStorage.getItem("lastClaim");
+
+document.getElementById("points").innerText = "Points: " + points;
+
+function getNextResetTime() {
+  let now = new Date();
+
+  let reset = new Date();
+  reset.setHours(5);
+  reset.setMinutes(45);
+  reset.setSeconds(0);
+
+  if (now > reset) {
+    reset.setDate(reset.getDate() + 1);
+  }
+
+  return reset;
+}
+
+function canClaim() {
+  if (!lastClaim) return true;
+
+  let last = new Date(parseInt(lastClaim));
+  let reset = getNextResetTime();
+
+  return last < reset;
+}
+
+function updateButton() {
+  if (!canClaim()) {
+    document.getElementById("claimBtn").disabled = true;
+    document.getElementById("status").innerText =
+      "Already claimed. Reset at 5:45 AM IST";
+  }
+}
+
+function claimPoints() {
+  if (!canClaim()) return;
+
+  points = parseInt(points) + 10;
+  localStorage.setItem("points", points);
+  localStorage.setItem("lastClaim", Date.now());
+
+  document.getElementById("points").innerText = "Points: " + points;
+  document.getElementById("status").innerText = "Claim successful ✅";
+
+  updateButton();
+}
+
+updateButton();
+</script>
+
+</body>
+</html>
