@@ -1,55 +1,84 @@
+
 <!DOCTYPE html>
 <html>
 <head>
   <title>Glamin Slag Airdrop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- WalletConnect + Web3 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <script src="https://unpkg.com/@walletconnect/web3-provider/dist/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
 
   <style>
-    body {
-      background: #111;
-      color: white;
-      text-align: center;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: Arial;
-      padding: 50px;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .box {
+      background: #111;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 77, 166, 0.2);
     }
 
     h1 {
       color: #ff4da6;
     }
 
+    p {
+      color: #aaa;
+      margin: 10px 0 20px;
+    }
+
     button {
-      padding: 12px 20px;
+      width: 100%;
+      padding: 12px;
       background: #ff4da6;
       border: none;
       color: white;
-      border-radius: 20px;
-      cursor: pointer;
-      margin-top: 20px;
+      border-radius: 25px;
+      font-size: 16px;
     }
 
     #wallet {
-      margin-top: 20px;
+      margin-top: 15px;
+      font-size: 12px;
       color: #00ffcc;
+      word-break: break-all;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Glamin Slag Airdrop</h1>
-  <p>Connect your wallet to continue</p>
+  <div class="box">
+    <h1>Glamin Slag</h1>
+    <p>Airdrop Campaign</p>
 
-  <button onclick="connectWallet()">Connect Wallet</button>
-  <div id="wallet"></div>
+    <button onclick="connectWallet()">Connect Wallet</button>
+
+    <div id="wallet"></div>
+  </div>
 
   <script>
   async function connectWallet() {
 
-    // MetaMask
     if (window.ethereum) {
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
@@ -57,10 +86,7 @@
 
       document.getElementById("wallet").innerText =
         "Connected: " + accounts[0];
-    }
-
-    // WalletConnect (mobile Chrome)
-    else {
+    } else {
       const provider = new WalletConnectProvider.default({
         rpc: {
           1: "https://mainnet.infura.io/v3/ae8377efd8594d60bec630ac85cc7aa4"
