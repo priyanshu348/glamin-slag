@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Glamin Slag Login</title>
+  <title>PUBG Tournament Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -9,12 +9,12 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family:Arial;
+      font-family:Arial, sans-serif;
     }
 
     body{
       background:#0b0b0b;
-      color:white;
+      color:#fff;
       min-height:100vh;
       display:flex;
       justify-content:center;
@@ -24,29 +24,37 @@
 
     .box{
       width:100%;
-      max-width:380px;
-      background:#111;
+      max-width:400px;
+      background:#121212;
       border:1px solid #2a2a2a;
-      border-radius:16px;
+      border-radius:18px;
       padding:30px;
-      box-shadow:0 0 20px rgba(255,255,255,0.05);
+      box-shadow:0 0 25px rgba(255,193,7,0.08);
     }
 
     h1{
       text-align:center;
-      margin-bottom:20px;
-      color:#00ffcc;
+      color:#ffc107;
+      margin-bottom:8px;
+    }
+
+    .sub{
+      text-align:center;
+      color:#bbb;
+      font-size:14px;
+      margin-bottom:22px;
     }
 
     input{
       width:100%;
-      padding:13px;
+      padding:14px;
       margin-bottom:12px;
       border:none;
       border-radius:10px;
-      background:#1b1b1b;
+      background:#1c1c1c;
       color:white;
       outline:none;
+      font-size:14px;
     }
 
     button{
@@ -54,23 +62,23 @@
       padding:14px;
       border:none;
       border-radius:10px;
-      background:#00ffcc;
+      background:#ffc107;
       color:black;
       font-weight:bold;
+      font-size:15px;
       cursor:pointer;
-      margin-top:5px;
     }
 
     .switch{
       text-align:center;
-      margin-top:15px;
+      margin-top:16px;
       font-size:14px;
       color:#aaa;
       cursor:pointer;
     }
 
     .switch span{
-      color:#00ffcc;
+      color:#ffc107;
       font-weight:bold;
     }
 
@@ -79,7 +87,7 @@
     }
 
     #status{
-      margin-top:12px;
+      margin-top:14px;
       text-align:center;
       font-size:13px;
       color:#00ffcc;
@@ -90,14 +98,16 @@
 
 <div class="box">
 
-  <!-- SIGN UP PAGE -->
+  <!-- SIGN UP -->
   <div id="signupPage">
-    <h1>Sign Up</h1>
+
+    <h1>Create Account</h1>
+    <div class="sub">Register for PUBG Tournament Rewards</div>
 
     <input type="text" id="fullName" placeholder="Full Name">
-    <input type="email" id="signupEmail" placeholder="Email ID">
-    <input type="text" id="signupOtp" placeholder="OTP">
-    <input type="password" id="signupPassword" placeholder="Password">
+    <input type="email" id="signupEmail" placeholder="Email Address">
+    <input type="text" id="signupOtp" placeholder="Email Verification OTP">
+    <input type="password" id="signupPassword" placeholder="Create Password">
     <input type="password" id="confirmPassword" placeholder="Confirm Password">
 
     <button onclick="signup()">Sign Up</button>
@@ -105,21 +115,25 @@
     <div class="switch" onclick="showLogin()">
       Already have an account? <span>Login</span>
     </div>
+
   </div>
 
-  <!-- LOGIN PAGE -->
+  <!-- LOGIN -->
   <div id="loginPage" class="hidden">
-    <h1>Login</h1>
 
-    <input type="email" id="loginEmail" placeholder="Email ID">
-    <input type="text" id="loginOtp" placeholder="OTP">
+    <h1>Welcome Back</h1>
+    <div class="sub">Login to continue</div>
+
+    <input type="email" id="loginEmail" placeholder="Email Address">
+    <input type="text" id="loginOtp" placeholder="Verification OTP">
     <input type="password" id="loginPassword" placeholder="Password">
 
     <button onclick="login()">Login</button>
 
     <div class="switch" onclick="showSignup()">
-      Mere pass account nahi hai <span>Sign Up</span>
+      Don’t have an account? <span>Sign Up</span>
     </div>
+
   </div>
 
   <div id="status"></div>
@@ -127,7 +141,8 @@
 </div>
 
 <script>
-/* Refresh ke baad dobara login na karna pade */
+
+/* Already logged in */
 if(localStorage.getItem("loggedIn") === "true"){
   window.location.href = "home.html";
 }
@@ -152,12 +167,14 @@ function signup(){
   let confirm = document.getElementById("confirmPassword").value;
 
   if(!name || !email || !otp || !pass || !confirm){
-    document.getElementById("status").innerText = "Sab fields fill karo";
+    document.getElementById("status").innerText =
+      "Please fill all fields";
     return;
   }
 
   if(pass !== confirm){
-    document.getElementById("status").innerText = "Password match nahi hua";
+    document.getElementById("status").innerText =
+      "Passwords do not match";
     return;
   }
 
@@ -165,7 +182,8 @@ function signup(){
   localStorage.setItem("userEmail", email);
   localStorage.setItem("userPassword", pass);
 
-  document.getElementById("status").innerText = "Account created successfully ✅";
+  document.getElementById("status").innerText =
+    "Account created successfully ✅";
 
   setTimeout(() => {
     showLogin();
@@ -182,15 +200,20 @@ function login(){
 
   if(email === savedEmail && pass === savedPass && otp){
     localStorage.setItem("loggedIn", "true");
-    document.getElementById("status").innerText = "Login successful ✅";
+
+    document.getElementById("status").innerText =
+      "Login successful ✅";
 
     setTimeout(() => {
       window.location.href = "home.html";
     }, 1000);
+
   } else {
-    document.getElementById("status").innerText = "Invalid login details";
+    document.getElementById("status").innerText =
+      "Invalid login details";
   }
 }
+
 </script>
 
 </body>
