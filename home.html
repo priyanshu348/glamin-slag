@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Glamin Slag - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial;
+    }
+
+    body{
+      background:#0b0b0b;
+      color:white;
+      min-height:100vh;
+      padding-bottom:90px;
+    }
+
+    .top{
+      padding:25px 20px;
+      text-align:center;
+    }
+
+    .title{
+      color:#ffc107;
+      font-size:30px;
+      font-weight:bold;
+    }
+
+    .sub{
+      color:#aaa;
+      margin-top:8px;
+      font-size:14px;
+    }
+
+    .page{
+      padding:20px;
+    }
+
+    .card{
+      background:#121212;
+      border:1px solid #2a2a2a;
+      border-radius:16px;
+      padding:20px;
+      margin-bottom:18px;
+      box-shadow:0 0 15px rgba(255,193,7,0.05);
+    }
+
+    h2{
+      color:#ffc107;
+      margin-bottom:10px;
+      font-size:22px;
+    }
+
+    p{
+      color:#ddd;
+      line-height:1.6;
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:10px;
+      background:#ffc107;
+      color:black;
+      font-weight:bold;
+      margin-top:15px;
+      cursor:pointer;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      bottom:0;
+      left:0;
+      width:100%;
+      background:#111;
+      border-top:1px solid #2a2a2a;
+      display:flex;
+      justify-content:space-around;
+      padding:12px 5px;
+    }
+
+    .nav-btn{
+      flex:1;
+      text-align:center;
+      color:#aaa;
+      font-size:13px;
+      cursor:pointer;
+    }
+
+    .nav-btn.active{
+      color:#ffc107;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top">
+  <div class="title">Glamin Slag</div>
+  <div class="sub">PUBG Tournament Platform</div>
+</div>
+
+<!-- TOURNAMENT PAGE -->
+<div id="tournament" class="page">
+
+  <div class="card">
+    <h2>Tournament</h2>
+    <p>
+      Join daily PUBG tournaments and compete with top players.
+      Entry rewards and winner prizes available every day.
+    </p>
+
+    <button>
+      Join Tournament
+    </button>
+  </div>
+
+</div>
+
+<!-- BATTLE ROYAL PAGE -->
+<div id="battle" class="page hidden">
+
+  <div class="card">
+    <h2>Battle Royal</h2>
+    <p>
+      Enter battle royal rooms, survival matches and elite squad events.
+      Professional level competition starts here.
+    </p>
+
+    <button>
+      Enter Battle Royal
+    </button>
+  </div>
+
+</div>
+
+<!-- WALLET PAGE -->
+<div id="wallet" class="page hidden">
+
+  <div class="card">
+    <h2>Wallet</h2>
+    <p>
+      Current Balance: 0 Coins
+    </p>
+
+    <p>
+      Daily Claim Reward: 10 Points
+    </p>
+
+    <button>
+      Claim Daily Reward
+    </button>
+  </div>
+
+</div>
+
+<!-- PROFILE PAGE -->
+<div id="profile" class="page hidden">
+
+  <div class="card">
+    <h2>Profile</h2>
+    <p id="userName">
+      Welcome Player
+    </p>
+
+    <button onclick="logout()">
+      Logout
+    </button>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<div class="bottom-nav">
+
+  <div class="nav-btn active"
+       onclick="showPage('tournament', this)">
+    Tournament
+  </div>
+
+  <div class="nav-btn"
+       onclick="showPage('battle', this)">
+    Battle Royal
+  </div>
+
+  <div class="nav-btn"
+       onclick="showPage('wallet', this)">
+    Wallet
+  </div>
+
+  <div class="nav-btn"
+       onclick="showPage('profile', this)">
+    Profile
+  </div>
+
+</div>
+
+<script>
+
+if(localStorage.getItem("loggedIn") !== "true"){
+  window.location.href = "index.html";
+}
+
+let savedName =
+  localStorage.getItem("userName");
+
+if(savedName){
+  document.getElementById("userName")
+    .innerText =
+    "Welcome, " + savedName;
+}
+
+function showPage(pageId, element){
+
+  let pages =
+    document.querySelectorAll(".page");
+
+  pages.forEach(page => {
+    page.classList.add("hidden");
+  });
+
+  document.getElementById(pageId)
+    .classList.remove("hidden");
+
+  let navs =
+    document.querySelectorAll(".nav-btn");
+
+  navs.forEach(nav => {
+    nav.classList.remove("active");
+  });
+
+  element.classList.add("active");
+}
+
+function logout(){
+
+  localStorage.removeItem("loggedIn");
+
+  window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
