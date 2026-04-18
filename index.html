@@ -4,9 +4,7 @@
   <title>PUBG Tournament Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     *{
@@ -70,6 +68,22 @@
       margin-top:10px;
     }
 
+    .switch{
+      margin-top:15px;
+      color:#aaa;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    .switch span{
+      color:#ffc107;
+      font-weight:bold;
+    }
+
+    .hidden{
+      display:none;
+    }
+
     #status{
       margin-top:15px;
       font-size:13px;
@@ -81,112 +95,164 @@
 
 <div class="box">
 
-  <h1>Phone OTP Login</h1>
-  <div class="sub">
-    PUBG Tournament Secure Access
+  <!-- SIGN UP -->
+  <div id="signupPage">
+    <h1>Create Account</h1>
+    <div class="sub">
+      PUBG Tournament Secure Access
+    </div>
+
+    <input
+      type="text"
+      id="fullName"
+      placeholder="Full Name"
+    >
+
+    <input
+      type="email"
+      id="signupEmail"
+      placeholder="Email Address"
+    >
+
+    <input
+      type="password"
+      id="signupPassword"
+      placeholder="Create Password"
+    >
+
+    <button onclick="signup()">
+      Sign Up
+    </button>
+
+    <div class="switch" onclick="showLogin()">
+      Already have an account?
+      <span>Login</span>
+    </div>
   </div>
 
-  <input
-    type="text"
-    id="phone"
-    placeholder="+91 Enter Mobile Number"
-  >
+  <!-- LOGIN -->
+  <div id="loginPage" class="hidden">
+    <h1>Welcome Back</h1>
+    <div class="sub">
+      Login to continue
+    </div>
 
-  <button onclick="sendOtp()">
-    Get OTP
-  </button>
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Email Address"
+    >
 
-  <div id="recaptcha-container"></div>
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+    >
 
-  <input
-    type="text"
-    id="otp"
-    placeholder="Enter OTP"
-  >
+    <button onclick="login()">
+      Login
+    </button>
 
-  <button onclick="verifyOtp()">
-    Verify OTP
-  </button>
+    <div class="switch" onclick="showSignup()">
+      Don’t have an account?
+      <span>Sign Up</span>
+    </div>
+  </div>
 
   <div id="status"></div>
 
 </div>
 
 <script>
+const supabaseUrl =
+"https://cichvssbzxrxqbxktzsc.supabase.co";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDLDsZlB0kdA6oZjIyAzEkJzKIngWKG6ac",
-  authDomain: "lamin-slag.firebaseapp.com",
-  projectId: "lamin-slag",
-  storageBucket: "lamin-slag.firebasestorage.app",
-  messagingSenderId: "522509507532",
-  appId: "1:522509507532:web:f84ed596f1f2b5c4291b69",
-  measurementId: "G-JP2V56Q0KZ"
-};
+const supabaseKey =
+"sb_publishable_T_SsMNjo1oMwQ6wvzaL6IQ_CccQYQQj";
 
-firebase.initializeApp(firebaseConfig);
+const supabase =
+window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
 
-window.onload = function () {
-  window.recaptchaVerifier =
-    new firebase.auth.RecaptchaVerifier(
-      'recaptcha-container',
-      {
-        size: 'normal',
-        callback: function(response) {}
-      }
-    );
-};
+function showLogin(){
+  document.getElementById("signupPage")
+    .classList.add("hidden");
 
-function sendOtp() {
-  const phone =
-    document.getElementById("phone").value;
+  document.getElementById("loginPage")
+    .classList.remove("hidden");
 
-  firebase.auth().signInWithPhoneNumber(
-    phone,
-    window.recaptchaVerifier
-  )
-  .then(function (confirmationResult) {
-
-    window.confirmationResult =
-      confirmationResult;
-
-    document.getElementById("status").innerText =
-      "OTP Sent Successfully ✅";
-
-  })
-  .catch(function (error) {
-
-    document.getElementById("status").innerText =
-      "OTP Send Failed ❌";
-
-  });
+  document.getElementById("status")
+    .innerText = "";
 }
 
-function verifyOtp() {
-  const code =
-    document.getElementById("otp").value;
+function showSignup(){
+  document.getElementById("loginPage")
+    .classList.add("hidden");
 
-  confirmationResult.confirm(code)
-  .then(function (result) {
+  document.getElementById("signupPage")
+    .classList.remove("hidden");
 
-    localStorage.setItem("loggedIn", "true");
+  document.getElementById("status")
+    .innerText = "";
+}
 
-    document.getElementById("status").innerText =
-      "Login Successful ✅";
+async function signup(){
+  const email =
+    document.getElementById("signupEmail").value;
+
+  const password =
+    document.getElementById("signupPassword").value;
+
+  const { error } =
+    await supabase.auth.signUp({
+      email: email,
+      password: password
+    });
+
+  if(error){
+    document.getElementById("status")
+      .innerText = error.message;
+  } else {
+    document.getElementById("status")
+      .innerText =
+      "Signup successful ✅ Check email";
+  }
+}
+
+async function login(){
+  const email =
+    document.getElementById("loginEmail").value;
+
+  const password =
+    document.getElementById("loginPassword").value;
+
+  const { error } =
+    await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+  if(error){
+    document.getElementById("status")
+      .innerText = error.message;
+  } else {
+    localStorage.setItem(
+      "loggedIn",
+      "true"
+    );
+
+    document.getElementById("status")
+      .innerText =
+      "Login successful ✅";
 
     setTimeout(() => {
-      window.location.href = "home.html";
+      window.location.href =
+        "home.html";
     }, 1000);
-
-  })
-  .catch(function () {
-
-    document.getElementById("status").innerText =
-      "Wrong OTP ❌";
-
-  });
+  }
 }
-
 </script>
 
 </body>
