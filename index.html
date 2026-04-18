@@ -1,153 +1,194 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PUBG Tournament Airdrop</title>
-
+  <title>Glamin Slag Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Wallet Scripts -->
-  <script src="https://unpkg.com/web3modal"></script>
-  <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-  <script src="https://unpkg.com/@walletconnect/web3-provider/dist/umd/index.min.js"></script>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial;
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial;
     }
 
-    body {
-      background: #0a0a0a;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      background-image: linear-gradient(to bottom, #0a0a0a, #111);
+    body{
+      background:#0b0b0b;
+      color:white;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
     }
 
-    .box {
-      width: 100%;
-      max-width: 380px;
-      background: #121212;
-      border: 1px solid #2a2a2a;
-      border-radius: 18px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 0 25px rgba(255, 193, 7, 0.08);
+    .box{
+      width:100%;
+      max-width:380px;
+      background:#111;
+      border:1px solid #2a2a2a;
+      border-radius:16px;
+      padding:30px;
+      box-shadow:0 0 20px rgba(255,255,255,0.05);
     }
 
-    h1 {
-      color: #ffc107;
-      font-size: 28px;
-      margin-bottom: 10px;
+    h1{
+      text-align:center;
+      margin-bottom:20px;
+      color:#00ffcc;
     }
 
-    .sub {
-      color: #cccccc;
-      font-size: 14px;
-      margin-bottom: 20px;
+    input{
+      width:100%;
+      padding:13px;
+      margin-bottom:12px;
+      border:none;
+      border-radius:10px;
+      background:#1b1b1b;
+      color:white;
+      outline:none;
     }
 
-    .info {
-      font-size: 13px;
-      color: #aaaaaa;
-      line-height: 1.7;
-      margin-bottom: 20px;
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:10px;
+      background:#00ffcc;
+      color:black;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:5px;
     }
 
-    button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: #ffc107;
-      color: black;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+    .switch{
+      text-align:center;
+      margin-top:15px;
+      font-size:14px;
+      color:#aaa;
+      cursor:pointer;
     }
 
-    #status {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #00ffcc;
-      word-break: break-all;
+    .switch span{
+      color:#00ffcc;
+      font-weight:bold;
     }
 
-    .footer {
-      margin-top: 20px;
-      font-size: 11px;
-      color: #666;
+    .hidden{
+      display:none;
+    }
+
+    #status{
+      margin-top:12px;
+      text-align:center;
+      font-size:13px;
+      color:#00ffcc;
     }
   </style>
 </head>
-
 <body>
 
 <div class="box">
-  <h1>PUBG Tournament</h1>
 
-  <div class="sub">
-    Official Reward Access
+  <!-- SIGN UP PAGE -->
+  <div id="signupPage">
+    <h1>Sign Up</h1>
+
+    <input type="text" id="fullName" placeholder="Full Name">
+    <input type="email" id="signupEmail" placeholder="Email ID">
+    <input type="text" id="signupOtp" placeholder="OTP">
+    <input type="password" id="signupPassword" placeholder="Password">
+    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+    <button onclick="signup()">Sign Up</button>
+
+    <div class="switch" onclick="showLogin()">
+      Already have an account? <span>Login</span>
+    </div>
   </div>
 
-  <div class="info">
-    ✔ Verified Tournament Rewards <br>
-    ✔ Secure Wallet Verification <br>
-    ✔ No Private Key Required
-  </div>
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="hidden">
+    <h1>Login</h1>
 
-  <button onclick="connectWallet()">
-    Connect Wallet
-  </button>
+    <input type="email" id="loginEmail" placeholder="Email ID">
+    <input type="text" id="loginOtp" placeholder="OTP">
+    <input type="password" id="loginPassword" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <div class="switch" onclick="showSignup()">
+      Mere pass account nahi hai <span>Sign Up</span>
+    </div>
+  </div>
 
   <div id="status"></div>
 
-  <div class="footer">
-    Powered by Web3 Secure Access
-  </div>
 </div>
 
 <script>
-async function connectWallet() {
-  document.getElementById("status").innerText =
-    "Opening Wallet Options...";
+/* Refresh ke baad dobara login na karna pade */
+if(localStorage.getItem("loggedIn") === "true"){
+  window.location.href = "home.html";
+}
 
-  const providerOptions = {
-    walletconnect: {
-      package: window.WalletConnectProvider.default,
-      options: {
-        rpc: {
-          1: "https://mainnet.infura.io/v3/ae8377efd8594d60bec630ac85cc7aa4"
-        }
-      }
-    }
-  };
+function showLogin(){
+  document.getElementById("signupPage").classList.add("hidden");
+  document.getElementById("loginPage").classList.remove("hidden");
+  document.getElementById("status").innerText = "";
+}
 
-  const web3Modal = new window.Web3Modal.default({
-    cacheProvider: false,
-    providerOptions
-  });
+function showSignup(){
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("signupPage").classList.remove("hidden");
+  document.getElementById("status").innerText = "";
+}
 
-  try {
-    const provider = await web3Modal.connect();
-    const web3 = new Web3(provider);
+function signup(){
+  let name = document.getElementById("fullName").value;
+  let email = document.getElementById("signupEmail").value;
+  let otp = document.getElementById("signupOtp").value;
+  let pass = document.getElementById("signupPassword").value;
+  let confirm = document.getElementById("confirmPassword").value;
 
-    const accounts = await web3.eth.getAccounts();
-    const wallet = accounts[0];
+  if(!name || !email || !otp || !pass || !confirm){
+    document.getElementById("status").innerText = "Sab fields fill karo";
+    return;
+  }
 
-    localStorage.setItem("wallet", wallet);
+  if(pass !== confirm){
+    document.getElementById("status").innerText = "Password match nahi hua";
+    return;
+  }
 
-    document.getElementById("status").innerText =
-      "Connected: " + wallet;
+  localStorage.setItem("userName", name);
+  localStorage.setItem("userEmail", email);
+  localStorage.setItem("userPassword", pass);
 
-  } catch (error) {
-    document.getElementById("status").innerText =
-      "Connection Failed";
+  document.getElementById("status").innerText = "Account created successfully ✅";
+
+  setTimeout(() => {
+    showLogin();
+  }, 1000);
+}
+
+function login(){
+  let email = document.getElementById("loginEmail").value;
+  let otp = document.getElementById("loginOtp").value;
+  let pass = document.getElementById("loginPassword").value;
+
+  let savedEmail = localStorage.getItem("userEmail");
+  let savedPass = localStorage.getItem("userPassword");
+
+  if(email === savedEmail && pass === savedPass && otp){
+    localStorage.setItem("loggedIn", "true");
+    document.getElementById("status").innerText = "Login successful ✅";
+
+    setTimeout(() => {
+      window.location.href = "home.html";
+    }, 1000);
+  } else {
+    document.getElementById("status").innerText = "Invalid login details";
   }
 }
 </script>
