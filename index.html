@@ -4,8 +4,6 @@
   <title>PUBG Tournament Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     *{
       margin:0;
@@ -32,6 +30,7 @@
       border-radius:18px;
       padding:30px;
       text-align:center;
+      box-shadow:0 0 20px rgba(255,193,7,0.08);
     }
 
     h1{
@@ -56,6 +55,25 @@
       outline:none;
     }
 
+    .row{
+      display:flex;
+      gap:10px;
+    }
+
+    .row input{
+      flex:1;
+    }
+
+    .otp-btn{
+      width:130px;
+      background:#ffc107;
+      color:black;
+      font-weight:bold;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
     button{
       width:100%;
       padding:14px;
@@ -68,26 +86,10 @@
       margin-top:10px;
     }
 
-    .switch{
-      margin-top:15px;
-      color:#aaa;
-      font-size:14px;
-      cursor:pointer;
-    }
-
-    .switch span{
-      color:#ffc107;
-      font-weight:bold;
-    }
-
-    .hidden{
-      display:none;
-    }
-
     #status{
       margin-top:15px;
-      font-size:13px;
       color:#00ffcc;
+      font-size:13px;
     }
   </style>
 </head>
@@ -95,164 +97,134 @@
 
 <div class="box">
 
-  <!-- SIGN UP -->
-  <div id="signupPage">
-    <h1>Create Account</h1>
-    <div class="sub">
-      PUBG Tournament Secure Access
-    </div>
+  <h1>Create Account</h1>
+  <div class="sub">
+    PUBG Tournament Secure Access
+  </div>
 
-    <input
-      type="text"
-      id="fullName"
-      placeholder="Full Name"
-    >
+  <input
+    type="text"
+    id="name"
+    placeholder="Full Name"
+  >
 
+  <div class="row">
     <input
       type="email"
-      id="signupEmail"
+      id="email"
       placeholder="Email Address"
     >
 
-    <input
-      type="password"
-      id="signupPassword"
-      placeholder="Create Password"
+    <button
+      class="otp-btn"
+      id="otpBtn"
+      onclick="sendOtp()"
     >
-
-    <button onclick="signup()">
-      Sign Up
+      Get OTP
     </button>
-
-    <div class="switch" onclick="showLogin()">
-      Already have an account?
-      <span>Login</span>
-    </div>
   </div>
 
-  <!-- LOGIN -->
-  <div id="loginPage" class="hidden">
-    <h1>Welcome Back</h1>
-    <div class="sub">
-      Login to continue
-    </div>
+  <input
+    type="text"
+    id="otp"
+    placeholder="Enter OTP"
+  >
 
-    <input
-      type="email"
-      id="loginEmail"
-      placeholder="Email Address"
-    >
+  <input
+    type="password"
+    id="password"
+    placeholder="Create Password"
+  >
 
-    <input
-      type="password"
-      id="loginPassword"
-      placeholder="Password"
-    >
-
-    <button onclick="login()">
-      Login
-    </button>
-
-    <div class="switch" onclick="showSignup()">
-      Don’t have an account?
-      <span>Sign Up</span>
-    </div>
-  </div>
+  <button onclick="signup()">
+    Sign Up
+  </button>
 
   <div id="status"></div>
 
 </div>
 
 <script>
-const supabaseUrl =
-"https://cichvssbzxrxqbxktzsc.supabase.co";
 
-const supabaseKey =
-"sb_publishable_T_SsMNjo1oMwQ6wvzaL6IQ_CccQYQQj";
+let generatedOtp = "";
 
-const supabase =
-window.supabase.createClient(
-  supabaseUrl,
-  supabaseKey
-);
+function sendOtp(){
+  let email =
+    document.getElementById("email").value;
 
-function showLogin(){
-  document.getElementById("signupPage")
-    .classList.add("hidden");
+  let otpBtn =
+    document.getElementById("otpBtn");
 
-  document.getElementById("loginPage")
-    .classList.remove("hidden");
-
-  document.getElementById("status")
-    .innerText = "";
-}
-
-function showSignup(){
-  document.getElementById("loginPage")
-    .classList.add("hidden");
-
-  document.getElementById("signupPage")
-    .classList.remove("hidden");
-
-  document.getElementById("status")
-    .innerText = "";
-}
-
-async function signup(){
-  const email =
-    document.getElementById("signupEmail").value;
-
-  const password =
-    document.getElementById("signupPassword").value;
-
-  const { error } =
-    await supabase.auth.signUp({
-      email: email,
-      password: password
-    });
-
-  if(error){
-    document.getElementById("status")
-      .innerText = error.message;
-  } else {
-    document.getElementById("status")
-      .innerText =
-      "Signup successful ✅ Check email";
+  if(!email){
+    document.getElementById("status").innerText =
+      "Please enter email first";
+    return;
   }
+
+  generatedOtp =
+    Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+  document.getElementById("status").innerText =
+    "Demo OTP: " + generatedOtp;
+
+  let timeLeft = 60;
+
+  otpBtn.disabled = true;
+  otpBtn.innerText = "60s";
+
+  let timer = setInterval(() => {
+    timeLeft--;
+
+    otpBtn.innerText =
+      timeLeft + "s";
+
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      otpBtn.disabled = false;
+      otpBtn.innerText = "Get OTP";
+    }
+
+  }, 1000);
 }
 
-async function login(){
-  const email =
-    document.getElementById("loginEmail").value;
+function signup(){
+  let name =
+    document.getElementById("name").value;
 
-  const password =
-    document.getElementById("loginPassword").value;
+  let email =
+    document.getElementById("email").value;
 
-  const { error } =
-    await supabase.auth.signInWithPassword({
-      email: email,
-      password: password
-    });
+  let otp =
+    document.getElementById("otp").value;
 
-  if(error){
-    document.getElementById("status")
-      .innerText = error.message;
-  } else {
-    localStorage.setItem(
-      "loggedIn",
-      "true"
-    );
+  let password =
+    document.getElementById("password").value;
 
-    document.getElementById("status")
-      .innerText =
-      "Login successful ✅";
-
-    setTimeout(() => {
-      window.location.href =
-        "home.html";
-    }, 1000);
+  if(!name || !email || !otp || !password){
+    document.getElementById("status").innerText =
+      "Please fill all fields";
+    return;
   }
+
+  if(otp !== generatedOtp){
+    document.getElementById("status").innerText =
+      "Wrong OTP ❌";
+    return;
+  }
+
+  localStorage.setItem("loggedIn", "true");
+  localStorage.setItem("userName", name);
+
+  document.getElementById("status").innerText =
+    "Signup Successful ✅";
+
+  setTimeout(() => {
+    window.location.href = "home.html";
+  }, 1000);
 }
+
 </script>
 
 </body>
