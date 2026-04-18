@@ -64,14 +64,22 @@
   </div>
 </div><div id="profile" class="page hidden">
   <div class="card">
-    <h2>👤 Profile</h2>
-    <div class="profile-pic" id="preview">📷</div>
-    <input type="file" accept="image/*" onchange="previewImage(event)">
-    <input type="text" id="newName" placeholder="Change Name">
-    <input type="password" id="currentPassword" placeholder="Current Password">
-    <input type="password" id="newPassword" placeholder="New Password">
-    <button onclick="updateProfile()">Update Profile</button>
-    <button onclick="logout()">Logout</button>
+    <h2>👤 Profile</h2><div class="profile-pic" id="preview">📷</div>
+
+<p id="displayName">@player_profile</p>
+
+<button onclick="toggleEdit()">✏️ Edit Profile</button>
+
+<div id="editSection" class="hidden">
+  <input type="file" accept="image/*" onchange="previewImage(event)">
+  <input type="text" id="newName" placeholder="Update Name">
+  <input type="password" id="currentPassword" placeholder="Current Password">
+  <input type="password" id="newPassword" placeholder="New Password">
+  <button onclick="updateProfile()">Save Changes</button>
+</div>
+
+<button onclick="logout()">Logout</button>
+
   </div>
 </div><div class="bottom-nav">
   <div class="nav-btn active" onclick="showPage('tournament', this)">🏆<br>Tournament</div>
@@ -102,6 +110,10 @@ function previewImage(event){
   }
 }
 
+function toggleEdit(){
+  document.getElementById('editSection').classList.toggle('hidden');
+}
+
 function updateProfile(){
   const current = document.getElementById('currentPassword').value;
   const saved = localStorage.getItem('userPassword');
@@ -113,10 +125,17 @@ function updateProfile(){
     return;
   }
 
-  if(newName) localStorage.setItem('userName', newName);
-  if(newPass) localStorage.setItem('userPassword', newPass);
+  if(newName){
+    localStorage.setItem('userName', newName);
+    document.getElementById('displayName').innerText = '@' + newName;
+  }
+
+  if(newPass){
+    localStorage.setItem('userPassword', newPass);
+  }
 
   alert('Profile updated successfully');
+  document.getElementById('editSection').classList.add('hidden');
 }
 
 function logout(){
