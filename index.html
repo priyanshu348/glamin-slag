@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PUBG Tournament Portal</title>
+  <title>PUBG Tournament Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <style>
     *{
@@ -33,19 +34,18 @@
       border-radius:18px;
       padding:30px;
       box-shadow:0 0 25px rgba(255,193,7,0.08);
+      text-align:center;
     }
 
     h1{
-      text-align:center;
       color:#ffc107;
       margin-bottom:10px;
     }
 
     .sub{
-      text-align:center;
       color:#bbb;
-      font-size:14px;
       margin-bottom:20px;
+      font-size:14px;
     }
 
     input{
@@ -59,24 +59,6 @@
       outline:none;
     }
 
-    .email-row{
-      display:flex;
-      gap:10px;
-      margin-bottom:12px;
-    }
-
-    .email-row input{
-      flex:1;
-      margin-bottom:0;
-    }
-
-    .email-row button{
-      width:120px;
-      margin-top:0;
-      padding:14px 10px;
-      font-size:13px;
-    }
-
     button{
       width:100%;
       padding:14px;
@@ -86,29 +68,11 @@
       color:black;
       font-weight:bold;
       cursor:pointer;
-      margin-top:5px;
-    }
-
-    .switch{
-      text-align:center;
-      margin-top:15px;
-      color:#aaa;
-      font-size:14px;
-      cursor:pointer;
-    }
-
-    .switch span{
-      color:#ffc107;
-      font-weight:bold;
-    }
-
-    .hidden{
-      display:none;
+      margin-top:10px;
     }
 
     #status{
-      margin-top:12px;
-      text-align:center;
+      margin-top:15px;
       font-size:13px;
       color:#00ffcc;
     }
@@ -118,199 +82,110 @@
 
 <div class="box">
 
-  <!-- SIGN UP -->
-  <div id="signupPage">
-    <h1>Create Account</h1>
-    <div class="sub">Register for PUBG Tournament Rewards</div>
-
-    <input type="text" id="fullName" placeholder="Full Name">
-
-    <div class="email-row">
-      <input type="email" id="signupEmail" placeholder="Email Address">
-
-      <button id="otpBtn" onclick="sendOtp()">
-        Get OTP
-      </button>
-    </div>
-
-    <input type="text" id="signupOtp" placeholder="Enter OTP">
-
-    <input type="password" id="signupPassword" placeholder="Create Password">
-    <input type="password" id="confirmPassword" placeholder="Confirm Password">
-
-    <button onclick="signup()">Sign Up</button>
-
-    <div class="switch" onclick="showLogin()">
-      Already have an account? <span>Login</span>
-    </div>
+  <h1>Phone OTP Login</h1>
+  <div class="sub">
+    PUBG Tournament Secure Access
   </div>
 
-  <!-- LOGIN -->
-  <div id="loginPage" class="hidden">
-    <h1>Welcome Back</h1>
-    <div class="sub">Login to continue</div>
+  <input
+    type="text"
+    id="phone"
+    placeholder="+91 Enter Mobile Number"
+  >
 
-    <input type="email" id="loginEmail" placeholder="Email Address">
-    <input type="password" id="loginPassword" placeholder="Password">
+  <button onclick="sendOtp()">
+    Get OTP
+  </button>
 
-    <button onclick="login()">Login</button>
+  <div id="recaptcha-container"></div>
 
-    <div class="switch" onclick="showSignup()">
-      Don’t have an account? <span>Sign Up</span>
-    </div>
-  </div>
+  <input
+    type="text"
+    id="otp"
+    placeholder="Enter OTP"
+  >
+
+  <button onclick="verifyOtp()">
+    Verify OTP
+  </button>
 
   <div id="status"></div>
 
 </div>
 
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDEHKLywvovcKftXgOiHmWl3piOZ0Th5bw",
+  authDomain: "glamin-slag.firebaseapp.com",
+  projectId: "glamin-slag",
+  storageBucket: "glamin-slag.firebasestorage.app",
+  messagingSenderId: "1054916839301",
+  appId: "1:1054916839301:web:0d6126f5020f5591d066ec",
+  measurementId: "G-DS9854EJBM"
+};
 
-emailjs.init("kPQ1hoWmw6I7h2g47");
+firebase.initializeApp(firebaseConfig);
 
-let generatedOtp = "";
-
-if(localStorage.getItem("loggedIn") === "true"){
-  window.location.href = "home.html";
-}
-
-function showLogin(){
-  document.getElementById("signupPage").classList.add("hidden");
-  document.getElementById("loginPage").classList.remove("hidden");
-  document.getElementById("status").innerText = "";
-}
-
-function showSignup(){
-  document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("signupPage").classList.remove("hidden");
-  document.getElementById("status").innerText = "";
-}
-
-function sendOtp(){
-  let email = document.getElementById("signupEmail").value;
-  let otpBtn = document.getElementById("otpBtn");
-
-  if(!email){
-    document.getElementById("status").innerText =
-      "Please enter email first";
-    return;
-  }
-
-  generatedOtp = Math.floor(
-    100000 + Math.random() * 900000
-  ).toString();
-
-  let data = {
-    user_email: email,
-    otp_code: generatedOtp
-  };
-
-  emailjs.send(
-    "service_0wpof0c",
-    "template_h6fru5t",
-    data
-  ).then(() => {
-
-    document.getElementById("status").innerText =
-      "OTP sent successfully ✅";
-
-    let timeLeft = 60;
-    otpBtn.disabled = true;
-    otpBtn.innerText = timeLeft + "s";
-
-    let timer = setInterval(() => {
-      timeLeft--;
-
-      otpBtn.innerText = timeLeft + "s";
-
-      if(timeLeft <= 0){
-        clearInterval(timer);
-        otpBtn.disabled = false;
-        otpBtn.innerText = "Get OTP";
+window.onload = function () {
+  window.recaptchaVerifier =
+    new firebase.auth.RecaptchaVerifier(
+      'recaptcha-container',
+      {
+        size: 'normal',
+        callback: function(response) {}
       }
+    );
+};
 
-    }, 1000);
+function sendOtp() {
+  const phone =
+    document.getElementById("phone").value;
 
-  }).catch(() => {
+  firebase.auth().signInWithPhoneNumber(
+    phone,
+    window.recaptchaVerifier
+  )
+  .then(function (confirmationResult) {
+
+    window.confirmationResult =
+      confirmationResult;
+
     document.getElementById("status").innerText =
-      "OTP sending failed ❌";
+      "OTP Sent Successfully ✅";
+
+  })
+  .catch(function (error) {
+
+    document.getElementById("status").innerText =
+      "OTP Send Failed ❌";
+
   });
 }
 
-function verifyOtp(){
-  let userOtp =
-    document.getElementById("signupOtp").value;
+function verifyOtp() {
+  const code =
+    document.getElementById("otp").value;
 
-  if(userOtp === generatedOtp){
-    return true;
-  } else {
-    document.getElementById("status").innerText =
-      "Wrong OTP ❌";
-    return false;
-  }
-}
+  confirmationResult.confirm(code)
+  .then(function (result) {
 
-function signup(){
-  let name = document.getElementById("fullName").value;
-  let email = document.getElementById("signupEmail").value;
-  let pass = document.getElementById("signupPassword").value;
-  let confirm = document.getElementById("confirmPassword").value;
-
-  if(!name || !email || !pass || !confirm){
-    document.getElementById("status").innerText =
-      "Please fill all fields";
-    return;
-  }
-
-  if(pass !== confirm){
-    document.getElementById("status").innerText =
-      "Passwords do not match";
-    return;
-  }
-
-  if(!verifyOtp()) return;
-
-  localStorage.setItem("userName", name);
-  localStorage.setItem("userEmail", email);
-  localStorage.setItem("userPassword", pass);
-
-  document.getElementById("status").innerText =
-    "Account created successfully ✅";
-
-  setTimeout(() => {
-    showLogin();
-  }, 1000);
-}
-
-function login(){
-  let email =
-    document.getElementById("loginEmail").value;
-
-  let pass =
-    document.getElementById("loginPassword").value;
-
-  let savedEmail =
-    localStorage.getItem("userEmail");
-
-  let savedPass =
-    localStorage.getItem("userPassword");
-
-  if(email === savedEmail && pass === savedPass){
     localStorage.setItem("loggedIn", "true");
 
     document.getElementById("status").innerText =
-      "Login successful ✅";
+      "Login Successful ✅";
 
     setTimeout(() => {
       window.location.href = "home.html";
     }, 1000);
 
-  } else {
-    document.getElementById("status").innerText =
-      "Invalid login details";
-  }
-}
+  })
+  .catch(function () {
 
+    document.getElementById("status").innerText =
+      "Wrong OTP ❌";
+
+  });
+}
 </script>
 
 </body>
