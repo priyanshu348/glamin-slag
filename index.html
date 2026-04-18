@@ -4,17 +4,20 @@
   <title>PUBG Tournament Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
   <style>
     *{
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family:Arial, sans-serif;
+      font-family:Arial;
     }
 
     body{
       background:#0b0b0b;
-      color:#fff;
+      color:white;
       min-height:100vh;
       display:flex;
       justify-content:center;
@@ -35,14 +38,14 @@
     h1{
       text-align:center;
       color:#ffc107;
-      margin-bottom:8px;
+      margin-bottom:10px;
     }
 
     .sub{
       text-align:center;
       color:#bbb;
       font-size:14px;
-      margin-bottom:22px;
+      margin-bottom:20px;
     }
 
     input{
@@ -54,7 +57,6 @@
       background:#1c1c1c;
       color:white;
       outline:none;
-      font-size:14px;
     }
 
     button{
@@ -65,15 +67,15 @@
       background:#ffc107;
       color:black;
       font-weight:bold;
-      font-size:15px;
       cursor:pointer;
+      margin-top:5px;
     }
 
     .switch{
       text-align:center;
-      margin-top:16px;
-      font-size:14px;
+      margin-top:15px;
       color:#aaa;
+      font-size:14px;
       cursor:pointer;
     }
 
@@ -87,7 +89,7 @@
     }
 
     #status{
-      margin-top:14px;
+      margin-top:12px;
       text-align:center;
       font-size:13px;
       color:#00ffcc;
@@ -100,13 +102,16 @@
 
   <!-- SIGN UP -->
   <div id="signupPage">
-
     <h1>Create Account</h1>
     <div class="sub">Register for PUBG Tournament Rewards</div>
 
     <input type="text" id="fullName" placeholder="Full Name">
     <input type="email" id="signupEmail" placeholder="Email Address">
-    <input type="text" id="signupOtp" placeholder="Email Verification OTP">
+
+    <button onclick="sendOtp()">Get OTP</button>
+
+    <input type="text" id="signupOtp" placeholder="Enter OTP">
+
     <input type="password" id="signupPassword" placeholder="Create Password">
     <input type="password" id="confirmPassword" placeholder="Confirm Password">
 
@@ -115,17 +120,14 @@
     <div class="switch" onclick="showLogin()">
       Already have an account? <span>Login</span>
     </div>
-
   </div>
 
   <!-- LOGIN -->
   <div id="loginPage" class="hidden">
-
     <h1>Welcome Back</h1>
     <div class="sub">Login to continue</div>
 
     <input type="email" id="loginEmail" placeholder="Email Address">
-    <input type="text" id="loginOtp" placeholder="Verification OTP">
     <input type="password" id="loginPassword" placeholder="Password">
 
     <button onclick="login()">Login</button>
@@ -133,7 +135,6 @@
     <div class="switch" onclick="showSignup()">
       Don’t have an account? <span>Sign Up</span>
     </div>
-
   </div>
 
   <div id="status"></div>
@@ -142,7 +143,12 @@
 
 <script>
 
-/* Already logged in */
+/* Replace these with your EmailJS details */
+emailjs.init("kPQ1hoWmw6I7h2g47");
+
+let generatedOtp = "";
+
+/* Auto login check */
 if(localStorage.getItem("loggedIn") === "true"){
   window.location.href = "home.html";
 }
@@ -159,14 +165,57 @@ function showSignup(){
   document.getElementById("status").innerText = "";
 }
 
+function sendOtp(){
+  let email = document.getElementById("signupEmail").value;
+
+  if(!email){
+    document.getElementById("status").innerText =
+      "Please enter email first";
+    return;
+  }
+
+  generatedOtp = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
+
+  let data = {
+    user_email: email,
+    otp_code: generatedOtp
+  };
+
+  emailjs.send(
+    "service_0wpof0c",
+    "template_ob8z3nk",
+    data
+  ).then(() => {
+    document.getElementById("status").innerText =
+      "OTP sent successfully ✅";
+  }).catch(() => {
+    document.getElementById("status").innerText =
+      "OTP sending failed ❌";
+  });
+}
+
+function verifyOtp(){
+  let userOtp =
+    document.getElementById("signupOtp").value;
+
+  if(userOtp === generatedOtp){
+    return true;
+  } else {
+    document.getElementById("status").innerText =
+      "Wrong OTP ❌";
+    return false;
+  }
+}
+
 function signup(){
   let name = document.getElementById("fullName").value;
   let email = document.getElementById("signupEmail").value;
-  let otp = document.getElementById("signupOtp").value;
   let pass = document.getElementById("signupPassword").value;
   let confirm = document.getElementById("confirmPassword").value;
 
-  if(!name || !email || !otp || !pass || !confirm){
+  if(!name || !email || !pass || !confirm){
     document.getElementById("status").innerText =
       "Please fill all fields";
     return;
@@ -177,6 +226,8 @@ function signup(){
       "Passwords do not match";
     return;
   }
+
+  if(!verifyOtp()) return;
 
   localStorage.setItem("userName", name);
   localStorage.setItem("userEmail", email);
@@ -191,14 +242,19 @@ function signup(){
 }
 
 function login(){
-  let email = document.getElementById("loginEmail").value;
-  let otp = document.getElementById("loginOtp").value;
-  let pass = document.getElementById("loginPassword").value;
+  let email =
+    document.getElementById("loginEmail").value;
 
-  let savedEmail = localStorage.getItem("userEmail");
-  let savedPass = localStorage.getItem("userPassword");
+  let pass =
+    document.getElementById("loginPassword").value;
 
-  if(email === savedEmail && pass === savedPass && otp){
+  let savedEmail =
+    localStorage.getItem("userEmail");
+
+  let savedPass =
+    localStorage.getItem("userPassword");
+
+  if(email === savedEmail && pass === savedPass){
     localStorage.setItem("loggedIn", "true");
 
     document.getElementById("status").innerText =
