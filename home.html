@@ -109,96 +109,71 @@
   <div class="sub">PUBG Tournament Platform</div>
 </div>
 
-<!-- TOURNAMENT PAGE -->
+<!-- TOURNAMENT -->
 <div id="tournament" class="page">
-
   <div class="card">
-    <h2>Tournament</h2>
+    <h2>🏆 Tournament</h2>
     <p>
       Join daily PUBG tournaments and compete with top players.
-      Entry rewards and winner prizes available every day.
     </p>
-
-    <button>
-      Join Tournament
-    </button>
+    <button>Join Tournament</button>
   </div>
-
 </div>
 
-<!-- BATTLE ROYAL PAGE -->
+<!-- BATTLE ROYAL -->
 <div id="battle" class="page hidden">
-
   <div class="card">
-    <h2>Battle Royal</h2>
+    <h2>⚔️ Battle Royal</h2>
     <p>
-      Enter battle royal rooms, survival matches and elite squad events.
-      Professional level competition starts here.
+      Enter battle royal rooms and elite squad events.
     </p>
-
-    <button>
-      Enter Battle Royal
-    </button>
+    <button>Enter Battle Royal</button>
   </div>
-
 </div>
 
-<!-- WALLET PAGE -->
+<!-- WALLET -->
 <div id="wallet" class="page hidden">
-
   <div class="card">
-    <h2>Wallet</h2>
-    <p>
-      Current Balance: 0 Coins
-    </p>
-
-    <p>
-      Daily Claim Reward: 10 Points
-    </p>
-
-    <button>
-      Claim Daily Reward
-    </button>
+    <h2>💰 Wallet</h2>
+    <p>Current Balance: 0 Coins</p>
+    <p>Daily Claim Reward: 10 Points</p>
+    <button>Claim Daily Reward</button>
   </div>
-
 </div>
 
-<!-- PROFILE PAGE -->
+<!-- PROFILE -->
 <div id="profile" class="page hidden">
-
   <div class="card">
-    <h2>Profile</h2>
-    <p id="userName">
-      Welcome Player
-    </p>
-
-    <button onclick="logout()">
-      Logout
-    </button>
+    <h2>👤 Profile</h2>
+    <p id="userName">Welcome Player</p>
+    <button onclick="logout()">Logout</button>
   </div>
-
 </div>
 
-<!-- BOTTOM NAVIGATION -->
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
 
   <div class="nav-btn active"
        onclick="showPage('tournament', this)">
+    🏆<br>
     Tournament
   </div>
 
   <div class="nav-btn"
        onclick="showPage('battle', this)">
+    ⚔️<br>
     Battle Royal
   </div>
 
   <div class="nav-btn"
        onclick="showPage('wallet', this)">
+    💰<br>
     Wallet
   </div>
 
   <div class="nav-btn"
        onclick="showPage('profile', this)">
+    👤<br>
     Profile
   </div>
 
@@ -210,19 +185,16 @@ if(localStorage.getItem("loggedIn") !== "true"){
   window.location.href = "index.html";
 }
 
-let savedName =
-  localStorage.getItem("userName");
+let savedName = localStorage.getItem("userName");
 
 if(savedName){
-  document.getElementById("userName")
-    .innerText =
+  document.getElementById("userName").innerText =
     "Welcome, " + savedName;
 }
 
 function showPage(pageId, element){
 
-  let pages =
-    document.querySelectorAll(".page");
+  let pages = document.querySelectorAll(".page");
 
   pages.forEach(page => {
     page.classList.add("hidden");
@@ -231,8 +203,7 @@ function showPage(pageId, element){
   document.getElementById(pageId)
     .classList.remove("hidden");
 
-  let navs =
-    document.querySelectorAll(".nav-btn");
+  let navs = document.querySelectorAll(".nav-btn");
 
   navs.forEach(nav => {
     nav.classList.remove("active");
@@ -242,9 +213,7 @@ function showPage(pageId, element){
 }
 
 function logout(){
-
   localStorage.removeItem("loggedIn");
-
   window.location.href = "index.html";
 }
 
