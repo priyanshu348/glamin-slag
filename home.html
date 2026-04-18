@@ -14,6 +14,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      margin: 0;
     }
 
     .box {
@@ -23,6 +24,10 @@
       max-width: 350px;
       text-align: center;
       box-shadow: 0 0 20px #00ffcc33;
+    }
+
+    h1 {
+      margin-bottom: 10px;
     }
 
     .wallet {
@@ -45,13 +50,19 @@
       color: #00ffcc;
       margin-top: 10px;
     }
+
+    #status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #aaa;
+    }
   </style>
 </head>
 
 <body>
 
 <div class="box">
-  <h1>DASHBOARD</h1>
+  <h1>GLAMIN SLAG</h1>
 
   <div class="wallet" id="wallet"></div>
 
@@ -59,13 +70,14 @@
 
   <button id="claimBtn" onclick="claimPoints()">Claim 10 Points</button>
 
+  <button onclick="logout()">Logout</button>
+
   <div id="status"></div>
 </div>
 
 <script>
 let wallet = localStorage.getItem("wallet");
 
-// Agar wallet nahi hai → wapas login page
 if (!wallet) {
   window.location.href = "index.html";
 }
@@ -76,10 +88,12 @@ document.getElementById("wallet").innerText =
 let points = localStorage.getItem("points") || 0;
 let lastClaim = localStorage.getItem("lastClaim");
 
-document.getElementById("points").innerText = "Points: " + points;
+document.getElementById("points").innerText =
+  "Points: " + points;
 
 function getResetTime() {
   let reset = new Date();
+
   reset.setHours(5);
   reset.setMinutes(45);
   reset.setSeconds(0);
@@ -113,10 +127,18 @@ function claimPoints() {
   localStorage.setItem("points", points);
   localStorage.setItem("lastClaim", Date.now());
 
-  document.getElementById("points").innerText = "Points: " + points;
-  document.getElementById("status").innerText = "Claimed ✅";
+  document.getElementById("points").innerText =
+    "Points: " + points;
+
+  document.getElementById("status").innerText =
+    "Claimed Successfully ✅";
 
   updateBtn();
+}
+
+function logout() {
+  localStorage.removeItem("wallet");
+  window.location.href = "index.html";
 }
 
 updateBtn();
