@@ -1,127 +1,116 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
-  <title>Glamin Slag - Home</title>
+  <title>Glamin Slag</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-    body{background:#0b0b0b;color:#fff;min-height:100vh;padding-bottom:100px;}
-    .top{padding:24px 20px;text-align:center;}
-    .title{color:#ffc107;font-size:30px;font-weight:bold;}
-    .sub{color:#aaa;margin-top:8px;font-size:14px;}
-    .page{padding:20px;}
-    .card{background:#121212;border:1px solid #2a2a2a;border-radius:16px;padding:20px;margin-bottom:18px;}
-    h2{color:#ffc107;margin-bottom:10px;font-size:22px;}
-    p{color:#ddd;line-height:1.6;margin-bottom:8px;}
-    input{width:100%;padding:14px;margin-bottom:12px;border:none;border-radius:10px;background:#1c1c1c;color:#fff;outline:none;}
-    button{width:100%;padding:14px;border:none;border-radius:10px;background:#ffc107;color:#000;font-weight:bold;cursor:pointer;margin-top:10px;}
-    .hidden{display:none;}
-    .profile-pic{width:90px;height:90px;border-radius:50%;background:#1c1c1c;display:flex;align-items:center;justify-content:center;margin:0 auto 15px;font-size:30px;overflow:hidden;}
-    .profile-pic img{width:100%;height:100%;object-fit:cover;}
-    .bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:#111;border-top:1px solid #2a2a2a;display:flex;justify-content:space-around;padding:12px 5px;}
-    .nav-btn{flex:1;text-align:center;color:#aaa;font-size:12px;cursor:pointer;}
-    .nav-btn.active{color:#ffc107;font-weight:bold;}
-    table{width:100%;border-collapse:collapse;margin-top:10px;}
-    th,td{padding:10px;border-bottom:1px solid #2a2a2a;font-size:13px;text-align:left;}
-    th{color:#ffc107;}
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial;
+    }
+
+    body{
+      background:#0b0b0b;
+      min-height:100vh;
+      padding-bottom:90px;
+    }
+
+    .page{
+      min-height:80vh;
+      padding:20px;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      bottom:0;
+      left:0;
+      width:100%;
+      background:#111;
+      border-top:1px solid #2a2a2a;
+      display:flex;
+      justify-content:space-around;
+      padding:12px 5px;
+    }
+
+    .nav-btn{
+      flex:1;
+      text-align:center;
+      color:#ffc107;
+      font-size:13px;
+      cursor:pointer;
+    }
   </style>
 </head>
-<body><div class="top">
-  <div class="title">Glamin Slag</div>
-  <div class="sub">PUBG Tournament Platform</div>
-</div><div id="tournament" class="page">
-  <div class="card">
-    <h2>🏆 Tournament</h2>
-    <p>Join daily PUBG tournaments and compete with top players.</p>
-    <button>Join Tournament</button>
+<body>
+
+<!-- Tournament -->
+<div id="tournament" class="page"></div>
+
+<!-- Battle Royal -->
+<div id="battle" class="page hidden"></div>
+
+<!-- Wallet -->
+<div id="wallet" class="page hidden"></div>
+
+<!-- Refer -->
+<div id="refer" class="page hidden"></div>
+
+<!-- Profile -->
+<div id="profile" class="page hidden"></div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+
+  <div class="nav-btn"
+       onclick="showPage('tournament')">
+    🏆
   </div>
-</div><div id="battle" class="page hidden">
-  <div class="card">
-    <h2>⚔️ Battle Royal</h2>
-    <p>Enter battle royal rooms and elite squad events.</p>
-    <button>Enter Battle Royal</button>
+
+  <div class="nav-btn"
+       onclick="showPage('battle')">
+    ⚔️
   </div>
-</div><div id="wallet" class="page hidden">
-  <div class="card">
-    <h2>💰 Wallet</h2>
-    <p>Current Balance: 0 Coins</p>
-    <p>Daily Claim Reward: 10 Points</p>
-    <button>Claim Daily Reward</button>
-  </div>  <div class="card">
-    <h2>📈 Wallet Graph</h2>
-    <table>
-      <tr><th>Date</th><th>Type</th><th>Amount</th></tr>
-      <tr><td>10 Apr</td><td>Deposit</td><td>+100</td></tr>
-      <tr><td>12 Apr</td><td>Withdraw</td><td>-40</td></tr>
-      <tr><td>14 Apr</td><td>Profit</td><td>+60</td></tr>
-    </table>
+
+  <div class="nav-btn"
+       onclick="showPage('wallet')">
+    💰
   </div>
-</div><div id="refer" class="page hidden">
-  <div class="card">
-    <h2>🎁 Referral</h2>
-    <p>Your Referral Code: GLAMIN100</p>
-    <p>Total Referrals: 0</p>
-    <button>Copy Referral Link</button>
+
+  <div class="nav-btn"
+       onclick="showPage('refer')">
+    🎁
   </div>
-</div><div id="profile" class="page hidden">
-  <div class="card">
-    <h2>👤 Profile</h2>
-    <div class="profile-pic" id="preview">📷</div>
-    <input type="file" accept="image/*" onchange="previewImage(event)">
-    <input type="text" id="newName" placeholder="Change Name">
-    <input type="password" id="currentPassword" placeholder="Current Password">
-    <input type="password" id="newPassword" placeholder="New Password">
-    <button onclick="updateProfile()">Update Profile</button>
-    <button onclick="logout()">Logout</button>
+
+  <div class="nav-btn"
+       onclick="showPage('profile')">
+    👤
   </div>
-</div><div class="bottom-nav">
-  <div class="nav-btn active" onclick="showPage('tournament', this)">🏆<br>Tournament</div>
-  <div class="nav-btn" onclick="showPage('battle', this)">⚔️<br>Battle</div>
-  <div class="nav-btn" onclick="showPage('wallet', this)">💰<br>Wallet</div>
-  <div class="nav-btn" onclick="showPage('refer', this)">🎁<br>Refer</div>
-  <div class="nav-btn" onclick="showPage('profile', this)">👤<br>Profile</div>
-</div><script>
-if(localStorage.getItem('loggedIn') !== 'true'){
-  window.location.href = 'index.html';
+
+</div>
+
+<script>
+
+function showPage(pageId){
+
+  let pages =
+    document.querySelectorAll(".page");
+
+  pages.forEach(page => {
+    page.classList.add("hidden");
+  });
+
+  document.getElementById(pageId)
+    .classList.remove("hidden");
 }
 
-function showPage(pageId, element){
-  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  document.getElementById(pageId).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
-  element.classList.add('active');
-}
+</script>
 
-function previewImage(event){
-  const file = event.target.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      document.getElementById('preview').innerHTML = '<img src="'+e.target.result+'">';
-    }
-    reader.readAsDataURL(file);
-  }
-}
-
-function updateProfile(){
-  const current = document.getElementById('currentPassword').value;
-  const saved = localStorage.getItem('userPassword');
-  const newName = document.getElementById('newName').value;
-  const newPass = document.getElementById('newPassword').value;
-
-  if(current !== saved){
-    alert('Current password is wrong');
-    return;
-  }
-
-  if(newName) localStorage.setItem('userName', newName);
-  if(newPass) localStorage.setItem('userPassword', newPass);
-
-  alert('Profile updated successfully');
-}
-
-function logout(){
-  localStorage.removeItem('loggedIn');
-  window.location.href = 'index.html';
-}
-</script></body>
+</body>
 </html>
