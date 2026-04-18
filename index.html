@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PUBG Tournament Login</title>
+  <title>Glamin Slag</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -29,49 +29,33 @@
       border:1px solid #2a2a2a;
       border-radius:18px;
       padding:30px;
-      text-align:center;
       box-shadow:0 0 20px rgba(255,193,7,0.08);
     }
 
     h1{
+      text-align:center;
       color:#ffc107;
       margin-bottom:10px;
+      font-size:34px;
     }
 
     .sub{
+      text-align:center;
       color:#bbb;
-      margin-bottom:20px;
+      margin-bottom:25px;
       font-size:14px;
     }
 
     input{
       width:100%;
       padding:14px;
-      margin-bottom:12px;
+      margin-bottom:14px;
       border:none;
       border-radius:10px;
       background:#1c1c1c;
       color:white;
       outline:none;
-    }
-
-    .row{
-      display:flex;
-      gap:10px;
-    }
-
-    .row input{
-      flex:1;
-    }
-
-    .otp-btn{
-      width:130px;
-      background:#ffc107;
-      color:black;
-      font-weight:bold;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
+      font-size:15px;
     }
 
     button{
@@ -82,14 +66,33 @@
       background:#ffc107;
       color:black;
       font-weight:bold;
+      font-size:16px;
       cursor:pointer;
-      margin-top:10px;
+      margin-top:5px;
+    }
+
+    .switch{
+      text-align:center;
+      margin-top:18px;
+      color:#aaa;
+      font-size:14px;
+    }
+
+    .switch span{
+      color:#ffc107;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .hidden{
+      display:none;
     }
 
     #status{
+      text-align:center;
       margin-top:15px;
       color:#00ffcc;
-      font-size:13px;
+      font-size:14px;
     }
   </style>
 </head>
@@ -97,48 +100,81 @@
 
 <div class="box">
 
-  <h1>Create Account</h1>
-  <div class="sub">
-    PUBG Tournament Secure Access
-  </div>
+  <!-- SIGN UP PAGE -->
+  <div id="signupPage">
 
-  <input
-    type="text"
-    id="name"
-    placeholder="Full Name"
-  >
+    <h1>Glamin Slag</h1>
 
-  <div class="row">
+    <div class="sub">
+      Create your secure account
+    </div>
+
+    <input
+      type="text"
+      id="fullName"
+      placeholder="Full Name"
+    >
+
     <input
       type="email"
-      id="email"
+      id="signupEmail"
       placeholder="Email Address"
     >
 
-    <button
-      class="otp-btn"
-      id="otpBtn"
-      onclick="sendOtp()"
+    <input
+      type="password"
+      id="signupPassword"
+      placeholder="Create Password"
     >
-      Get OTP
+
+    <input
+      type="password"
+      id="confirmPassword"
+      placeholder="Confirm Password"
+    >
+
+    <button onclick="signup()">
+      Sign Up
     </button>
+
+    <div class="switch">
+      Already have an account?
+      <span onclick="showLogin()">Login</span>
+    </div>
+
   </div>
 
-  <input
-    type="text"
-    id="otp"
-    placeholder="Enter OTP"
-  >
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="hidden">
 
-  <input
-    type="password"
-    id="password"
-    placeholder="Create Password"
-  >
+    <h1>Glamin Slag</h1>
 
-  <button onclick="signup()">
-    Sign Up
-  </button>
+    <div class="sub">
+      Login to continue
+    </div>
+
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Email Address"
+    >
+
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+    >
+
+    <button onclick="login()">
+      Login
+    </button>
+
+    <div class="switch">
+      Don’t have an account?
+      <span onclick="showSignup()">Sign Up</span>
+    </div>
+
+  </div>
 
   <div id="status"></div>
 
@@ -146,83 +182,100 @@
 
 <script>
 
-let generatedOtp = "";
+function showLogin(){
+  document.getElementById("signupPage")
+    .classList.add("hidden");
 
-function sendOtp(){
-  let email =
-    document.getElementById("email").value;
+  document.getElementById("loginPage")
+    .classList.remove("hidden");
 
-  let otpBtn =
-    document.getElementById("otpBtn");
+  document.getElementById("status")
+    .innerText = "";
+}
 
-  if(!email){
-    document.getElementById("status").innerText =
-      "Please enter email first";
-    return;
-  }
+function showSignup(){
+  document.getElementById("loginPage")
+    .classList.add("hidden");
 
-  generatedOtp =
-    Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+  document.getElementById("signupPage")
+    .classList.remove("hidden");
 
-  document.getElementById("status").innerText =
-    "Demo OTP: " + generatedOtp;
-
-  let timeLeft = 60;
-
-  otpBtn.disabled = true;
-  otpBtn.innerText = "60s";
-
-  let timer = setInterval(() => {
-    timeLeft--;
-
-    otpBtn.innerText =
-      timeLeft + "s";
-
-    if(timeLeft <= 0){
-      clearInterval(timer);
-      otpBtn.disabled = false;
-      otpBtn.innerText = "Get OTP";
-    }
-
-  }, 1000);
+  document.getElementById("status")
+    .innerText = "";
 }
 
 function signup(){
+
   let name =
-    document.getElementById("name").value;
+    document.getElementById("fullName").value;
 
   let email =
-    document.getElementById("email").value;
-
-  let otp =
-    document.getElementById("otp").value;
+    document.getElementById("signupEmail").value;
 
   let password =
-    document.getElementById("password").value;
+    document.getElementById("signupPassword").value;
 
-  if(!name || !email || !otp || !password){
+  let confirm =
+    document.getElementById("confirmPassword").value;
+
+  if(!name || !email || !password || !confirm){
     document.getElementById("status").innerText =
       "Please fill all fields";
     return;
   }
 
-  if(otp !== generatedOtp){
+  if(password !== confirm){
     document.getElementById("status").innerText =
-      "Wrong OTP ❌";
+      "Passwords do not match";
     return;
   }
 
-  localStorage.setItem("loggedIn", "true");
   localStorage.setItem("userName", name);
+  localStorage.setItem("userEmail", email);
+  localStorage.setItem("userPassword", password);
 
   document.getElementById("status").innerText =
-    "Signup Successful ✅";
+    "Account created successfully ✅";
 
   setTimeout(() => {
-    window.location.href = "home.html";
+    showLogin();
   }, 1000);
+}
+
+function login(){
+
+  let email =
+    document.getElementById("loginEmail").value;
+
+  let password =
+    document.getElementById("loginPassword").value;
+
+  let savedEmail =
+    localStorage.getItem("userEmail");
+
+  let savedPassword =
+    localStorage.getItem("userPassword");
+
+  if(email === savedEmail &&
+     password === savedPassword){
+
+    localStorage.setItem(
+      "loggedIn",
+      "true"
+    );
+
+    document.getElementById("status").innerText =
+      "Login successful ✅";
+
+    setTimeout(() => {
+      window.location.href =
+        "home.html";
+    }, 1000);
+
+  } else {
+    document.getElementById("status").innerText =
+      "Invalid email or password";
+  }
 }
 
 </script>
