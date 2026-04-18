@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PUBG Tournament Airdrop</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Wallet Scripts -->
+  <script src="https://unpkg.com/web3modal"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider/dist/umd/index.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background-image: linear-gradient(to bottom, #0a0a0a, #111);
+    }
+
+    .box {
+      width: 100%;
+      max-width: 380px;
+      background: #121212;
+      border: 1px solid #2a2a2a;
+      border-radius: 18px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255, 193, 7, 0.08);
+    }
+
+    h1 {
+      color: #ffc107;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .sub {
+      color: #cccccc;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      font-size: 13px;
+      color: #aaaaaa;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #ffc107;
+      color: black;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #00ffcc;
+      word-break: break-all;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>PUBG Tournament</h1>
+
+  <div class="sub">
+    Official Reward Access
+  </div>
+
+  <div class="info">
+    ✔ Verified Tournament Rewards <br>
+    ✔ Secure Wallet Verification <br>
+    ✔ No Private Key Required
+  </div>
+
+  <button onclick="connectWallet()">
+    Connect Wallet
+  </button>
+
+  <div id="status"></div>
+
+  <div class="footer">
+    Powered by Web3 Secure Access
+  </div>
+</div>
+
+<script>
+async function connectWallet() {
+  document.getElementById("status").innerText =
+    "Opening Wallet Options...";
+
+  const providerOptions = {
+    walletconnect: {
+      package: window.WalletConnectProvider.default,
+      options: {
+        rpc: {
+          1: "https://mainnet.infura.io/v3/ae8377efd8594d60bec630ac85cc7aa4"
+        }
+      }
+    }
+  };
+
+  const web3Modal = new window.Web3Modal.default({
+    cacheProvider: false,
+    providerOptions
+  });
+
+  try {
+    const provider = await web3Modal.connect();
+    const web3 = new Web3(provider);
+
+    const accounts = await web3.eth.getAccounts();
+    const wallet = accounts[0];
+
+    localStorage.setItem("wallet", wallet);
+
+    document.getElementById("status").innerText =
+      "Connected: " + wallet;
+
+  } catch (error) {
+    document.getElementById("status").innerText =
+      "Connection Failed";
+  }
+}
+</script>
+
+</body>
+</html>
