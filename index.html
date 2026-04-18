@@ -4,7 +4,6 @@
   <title>PUBG Tournament Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
   <style>
@@ -59,6 +58,24 @@
       outline:none;
     }
 
+    .email-row{
+      display:flex;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .email-row input{
+      flex:1;
+      margin-bottom:0;
+    }
+
+    .email-row button{
+      width:120px;
+      margin-top:0;
+      padding:14px 10px;
+      font-size:13px;
+    }
+
     button{
       width:100%;
       padding:14px;
@@ -106,9 +123,14 @@
     <div class="sub">Register for PUBG Tournament Rewards</div>
 
     <input type="text" id="fullName" placeholder="Full Name">
-    <input type="email" id="signupEmail" placeholder="Email Address">
 
-    <button onclick="sendOtp()">Get OTP</button>
+    <div class="email-row">
+      <input type="email" id="signupEmail" placeholder="Email Address">
+
+      <button id="otpBtn" onclick="sendOtp()">
+        Get OTP
+      </button>
+    </div>
 
     <input type="text" id="signupOtp" placeholder="Enter OTP">
 
@@ -143,12 +165,10 @@
 
 <script>
 
-/* Replace these with your EmailJS details */
 emailjs.init("kPQ1hoWmw6I7h2g47");
 
 let generatedOtp = "";
 
-/* Auto login check */
 if(localStorage.getItem("loggedIn") === "true"){
   window.location.href = "home.html";
 }
@@ -167,6 +187,7 @@ function showSignup(){
 
 function sendOtp(){
   let email = document.getElementById("signupEmail").value;
+  let otpBtn = document.getElementById("otpBtn");
 
   if(!email){
     document.getElementById("status").innerText =
@@ -185,11 +206,30 @@ function sendOtp(){
 
   emailjs.send(
     "service_0wpof0c",
-    "template_ob8z3nk",
+    "template_h6fru5t",
     data
   ).then(() => {
+
     document.getElementById("status").innerText =
       "OTP sent successfully ✅";
+
+    let timeLeft = 60;
+    otpBtn.disabled = true;
+    otpBtn.innerText = timeLeft + "s";
+
+    let timer = setInterval(() => {
+      timeLeft--;
+
+      otpBtn.innerText = timeLeft + "s";
+
+      if(timeLeft <= 0){
+        clearInterval(timer);
+        otpBtn.disabled = false;
+        otpBtn.innerText = "Get OTP";
+      }
+
+    }, 1000);
+
   }).catch(() => {
     document.getElementById("status").innerText =
       "OTP sending failed ❌";
