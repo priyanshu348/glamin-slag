@@ -26,8 +26,7 @@
   </style>
 </head>
 <body><div class="top">
-  <div class="title">Glamin Slag</div>
-  <div class="sub">PUBG Tournament Platform</div>
+  <div class="title" id="pageTitle">Tournament</div>
 </div><div id="tournament" class="page">
   <div class="card">
     <h2>🏆 Tournament</h2>
@@ -64,19 +63,24 @@
   </div>
 </div><div id="profile" class="page hidden">
   <div class="card">
-    <h2>👤 Profile</h2><div class="profile-pic" id="preview">📷</div>
+    <h2 style="text-align:center;">Profile</h2><div class="profile-pic" id="preview">📷</div>
 
-<p id="displayName">@player_profile</p>
+<p id="displayName" style="text-align:center;font-size:22px;font-weight:bold;">Player Name</p>
+<p id="displayEmail" style="text-align:center;color:#aaa;">user@email.com</p>
 
 <button onclick="toggleEdit()">✏️ Edit Profile</button>
 
 <div id="editSection" class="hidden">
-  <input type="file" accept="image/*" onchange="previewImage(event)">
-  <input type="text" id="newName" placeholder="Update Name">
   <input type="password" id="currentPassword" placeholder="Current Password">
   <input type="password" id="newPassword" placeholder="New Password">
-  <button onclick="updateProfile()">Save Changes</button>
+  <button onclick="updateProfile()">Update Password</button>
 </div>
+
+<table>
+  <tr><td>💳 Payment Method</td><td>›</td></tr>
+  <tr><td>🛟 Customer Support</td><td>›</td></tr>
+  <tr><td>📝 Feedback</td><td>›</td></tr>
+</table>
 
 <button onclick="logout()">Logout</button>
 
@@ -93,6 +97,14 @@ if(localStorage.getItem('loggedIn') !== 'true'){
 }
 
 function showPage(pageId, element){
+  const titles = {
+    tournament:'Tournament',
+    battle:'Battle Royal',
+    wallet:'Wallet',
+    refer:'Referral',
+    profile:'Profile'
+  };
+  document.getElementById('pageTitle').innerText = titles[pageId] || 'Page';
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById(pageId).classList.remove('hidden');
   document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
@@ -117,7 +129,6 @@ function toggleEdit(){
 function updateProfile(){
   const current = document.getElementById('currentPassword').value;
   const saved = localStorage.getItem('userPassword');
-  const newName = document.getElementById('newName').value;
   const newPass = document.getElementById('newPassword').value;
 
   if(current !== saved){
@@ -125,16 +136,11 @@ function updateProfile(){
     return;
   }
 
-  if(newName){
-    localStorage.setItem('userName', newName);
-    document.getElementById('displayName').innerText = '@' + newName;
-  }
-
   if(newPass){
     localStorage.setItem('userPassword', newPass);
   }
 
-  alert('Profile updated successfully');
+  alert('Password updated successfully');
   document.getElementById('editSection').classList.add('hidden');
 }
 
