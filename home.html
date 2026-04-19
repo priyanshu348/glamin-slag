@@ -127,20 +127,34 @@ function toggleEdit(){
 }
 
 function updateProfile(){
-  const current = document.getElementById('currentPassword').value;
-  const saved = localStorage.getItem('userPassword');
-  const newPass = document.getElementById('newPassword').value;
+
+  let current =
+    document.getElementById("currentPassword").value;
+
+  let saved =
+    localStorage.getItem("userPassword");
+
+  let newPass =
+    document.getElementById("newPassword").value;
+
+  let newName =
+    document.getElementById("editName").value;
 
   if(current !== saved){
-    alert('Current password is wrong');
+    alert("Current password is wrong");
     return;
   }
 
-  if(newPass){
-    localStorage.setItem('userPassword', newPass);
+  if(newName){
+    localStorage.setItem("userName", newName);
+    document.getElementById("displayName").innerText = newName;
   }
 
-  alert('Password updated successfully');
+  if(newPass){
+    localStorage.setItem("userPassword", newPass);
+  }
+
+  alert("Profile updated successfully");
   document.getElementById('editSection').classList.add('hidden');
 }
 
