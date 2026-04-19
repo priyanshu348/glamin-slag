@@ -96,6 +96,17 @@ if(localStorage.getItem('loggedIn') !== 'true'){
   window.location.href = 'index.html';
 }
 
+window.onload = function(){
+  const savedName = localStorage.getItem('userName') || 'Player Name';
+  const savedEmail = localStorage.getItem('userEmail') || 'user@email.com';
+
+  document.getElementById('displayName').innerText = savedName;
+  document.getElementById('displayEmail').innerText = savedEmail;
+  document.getElementById('showFullName').innerText = savedName;
+  document.getElementById('showEmail').innerText = savedEmail;
+  document.getElementById('showUsername').innerText = '@' + savedName.toLowerCase().replace(/\s+/g,'');
+}
+
 function showPage(pageId, element){
   const titles = {
     tournament:'Tournament',
