@@ -62,15 +62,16 @@
     <button>Copy Referral Link</button>
   </div>
 </div><div id="profile" class="page hidden">
-  <div class="card">
-    <h2 style="text-align:center;">Profile</h2><div class="profile-pic" id="preview">📷</div>
+  <div class="card"><div class="profile-pic" id="preview">📷</div>
 
 <p id="displayName" style="text-align:center;font-size:22px;font-weight:bold;">Player Name</p>
 <p id="displayEmail" style="text-align:center;color:#aaa;">user@email.com</p>
 
-<button onclick="toggleEdit()">✏️ Edit Profile</button>
+<button onclick="toggleEdit()" style="width:auto;padding:10px 18px;border-radius:30px;display:block;margin:15px auto;">✏️ Edit</button>
 
 <div id="editSection" class="hidden">
+  <input type="file" accept="image/*" onchange="previewImage(event)">
+  <input type="text" id="editName" placeholder="Full Name">
   <input type="password" id="currentPassword" placeholder="Current Password">
   <input type="password" id="newPassword" placeholder="New Password">
   <button onclick="updateProfile()">Update Password</button>
